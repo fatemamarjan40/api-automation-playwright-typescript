@@ -1,12 +1,12 @@
 {
     "testdataset1":{
-        "Skil1" : "Playwright by testers talk",
+        "Skil1" : "Playwright",
         "Skil2" : "selinum"
 
     },
     
     "testdataset2":{
-        "Skil1" : "typescripts with playwright",
+        "Skil1" : "typescripts",
         "Skil2" : "java"
 
     }

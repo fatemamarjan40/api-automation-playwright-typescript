@@ -1,0 +1,13 @@
+{
+    "testdataset1":{
+        "Skil1" : "Playwright by testers talk",
+        "Skil2" : "selinum"
+
+    },
+    
+    "testdataset2":{
+        "Skil1" : "typescripts with playwright",
+        "Skil2" : "java"
+
+    }
+}

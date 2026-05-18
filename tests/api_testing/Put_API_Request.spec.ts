@@ -1,0 +1,59 @@
+import { test, expect } from '@playwright/test'
+import { PostAPIRequestBody } from '../../src/utils/APIhelper';
+
+import { faker } from '@faker-js/faker';
+import tokenApiRequest from '../../test-data/API_Requests/Token_API_Request.json';
+import PutApiRequest from '../../test-data/API_Requests/Put_API_Request.json';
+
+test.use({
+
+  baseURL: process.env.BASE_API_URL,
+})
+
+
+test('Create PUT Request ', async ({ request }) => {
+
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const totalPrice = faker.number.int({ min: 1000, max: 10000 });
+
+  const postAPIRequest = await PostAPIRequestBody(firstName, lastName, totalPrice,
+    true, "breakfast", "2026-01-26", "2026-01-27");
+
+
+  const postAPIResponse = await request.post(`/booking`, { data: postAPIRequest });
+
+  const jsonPostapiResponse = await postAPIResponse.json();
+  console.log('Response:', JSON.stringify(jsonPostapiResponse, null, 2));
+
+  // get api response
+  const bookingID = jsonPostapiResponse.bookingid;
+  console.log('bookingID' + ':' + bookingID)
+  const getRequestResponse = await request.get(`/booking/${bookingID}`)
+
+
+  // generating token
+  const tokenApiResponse = await request.post(`/auth`, { data: tokenApiRequest });
+
+  const jsontokenApiResponse = await tokenApiResponse.json();
+  const tokenId = await jsontokenApiResponse.token;
+  console.log("token :" + tokenId);
+
+  // create put api request
+  const putApiResponse = await request.put(`/booking/${bookingID}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Cookie": `token= ${tokenId}`
+    },
+    data: PutApiRequest,
+
+  })
+
+  expect(putApiResponse.status()).toBe(200);
+  expect(putApiResponse.statusText()).toBe('OK');
+
+  const JsonPutApiResponse = await putApiResponse.json();
+  console.log('Response:', JSON.stringify(JsonPutApiResponse, null, 2));
+});
+
+
